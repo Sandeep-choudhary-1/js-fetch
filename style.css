@@ -1,0 +1,16 @@
+body {
+  background-color: rgb(245, 235, 235);
+}
+table,
+th,
+td {
+  border: 1.5px solid #444;
+  border-collapse: collapse;
+}
+tr:hover {
+  background-color: rgb(185, 180, 180);
+}
+button {
+  display: flex;
+  background-color: #3eb14b;
+}

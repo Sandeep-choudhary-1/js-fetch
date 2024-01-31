@@ -7,8 +7,28 @@
     <title>API Data</title>
   </head>
   <body>
-    <button class="fetch-all">Fetch All</button>
+    <button class="fetch-all-button">Fetch All</button>
+    <button class="create-button">Create</button>
+    <!-- <form action=""></form> -->
+    <form class="form-hidden">
+      <div>
+        <label for="ID">ID:</label>
+        <input type="number" class="input" id="id" />
+      </div>
+      <div>
+        <label for="title">TITLE:</label>
+        <input type="text" class="input" id="title" />
+      </div>
+      <div>
+        <label for="body">BODY:</label>
+        <input type="text" class="input" id="body" />
+      </div>
+
+      <button class="save-button">Save</button>
+    </form>
+    <!-- <div class="new-table"></div> -->
     <div class="table-container"></div>
+
     <script src="script.js"></script>
   </body>
 </html>

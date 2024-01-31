@@ -1,25 +1,102 @@
-const fetchAll = document.querySelector(".fetch-all-button");
-const createBtn = document.querySelector(".create-button");
-const saveBtn = document.querySelector(".save-button");
+const fetchAllButton = document.querySelector(".fetch-all-button");
+const openCreateFormButton = document.querySelector(".create-button");
+const saveRowDataBtn = document.querySelector(".save-button");
 const formContainer = document.querySelector(".form-hidden");
 const inputField = document.querySelector(".input");
 var tableContainer = document.querySelector(".table-container");
-const newTable = document.querySelector(".new-table");
-const tablEl = document.createElement("table");
 
-const headerRow = document.createElement("tr");
-["userId", "id", "title", "body"].forEach((headerText) => {
-  const th = document.createElement("th");
-  th.textContent = headerText;
-  headerRow.appendChild(th);
+const createHeaderRow = (tablEl, headers) => {
+  headers = headers.sort((a, b) => a - b);
+  const headerRow = document.createElement("tr");
+  headerRow.classList.add("table-header");
+
+  // add columns to header row
+  headers.forEach((headerText) => {
+    const th = document.createElement("th");
+    th.textContent = headerText;
+    headerRow.appendChild(th);
+  });
+
+  tablEl.appendChild(headerRow);
+  return;
+};
+
+// creating table with rows and columns
+function createTable(headers) {
+  if (!document.querySelector(".main-table")) {
+    const tablEl = document.createElement("table");
+    tablEl.classList.add("main-table");
+
+    tableContainer.innerHTML = "";
+    tableContainer.appendChild(tablEl);
+
+    if (!document.querySelector(".table-header")) {
+      createHeaderRow(tablEl, headers);
+    }
+  }
+
+  return;
+}
+
+const addRowsToTable = (rows) => {
+  if (!rows.length) return;
+
+  const tablEl = document.querySelector(".main-table");
+
+  rows.forEach((rowData, i) => {
+    // create row
+    const row = document.createElement("tr");
+    const values = Object.values(rowData);
+
+    if (i === 0) {
+      console.log("VALUES: ", rowData);
+      console.log("VALUES: ", values);
+    }
+
+    // add columns to row
+    values.forEach((val) => {
+      const cell = document.createElement("td");
+      cell.textContent = val;
+      row.appendChild(cell);
+    });
+
+    // add row to table
+    tablEl.appendChild(row);
+  });
+
+  return;
+};
+
+/**
+ * Click event handlers
+ */
+fetchAllButton.addEventListener("click", function () {
+  fetch("https://jsonplaceholder.typicode.com/posts")
+    .then((response) => response.json())
+    .then((json) => {
+      createTable(Object.keys(json[0]));
+      addRowsToTable(json);
+    });
 });
-tablEl.appendChild(headerRow);
 
-//new data from user
-const newData = function () {
-  var idField = Number(document.getElementById("id").value);
-  var titleField = document.getElementById("title").value;
-  var bodyField = document.getElementById("body").value;
+openCreateFormButton.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  formContainer.classList.remove("form-hidden");
+  document.getElementById("id").value = "";
+  document.getElementById("title").value = "";
+  document.getElementById("body").value = "";
+
+  return;
+});
+
+saveRowDataBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  formContainer.classList.add("form-hidden");
+
+  const idField = Number(document.getElementById("id").value);
+  const titleField = document.getElementById("title").value;
+  const bodyField = document.getElementById("body").value;
 
   fetch("https://jsonplaceholder.typicode.com/posts", {
     method: "POST",
@@ -34,86 +111,7 @@ const newData = function () {
   })
     .then((response) => response.json())
     .then((json) => {
-      // const result = Object.keys(json).map((key) => [key, json[key]]);
-      // console.log("create newdata");
-      // createTable([json], ["userId", "id", "title", "body"]);
-      // document.body.appendChild(newTable);
-      tablEl.insertAdjacentElement("afterbegin");
-      console.log(json);
-    });
-};
-
-// creating table with rows and columns
-function createTable(data, start = false) {
-  tablEl.classList.add("my-class");
-
-  data.forEach((rowData) => {
-    const row = document.createElement("tr");
-    headers.forEach((header) => {
-      const cell = document.createElement("td");
-      cell.textContent = rowData[header];
-      row.appendChild(cell);
-    });
-    tablEl.appendChild(row);
-  });
-
-  if (!tableContainer.innerHTML.length) tableContainer.innerHTML = "";
-  // tableContainer.appendChild(tablEl);
-  tableContainer.insertAdjacentElement("afterbegin", tablEl);
-  // console.log("create table");
-}
-
-fetchAll.addEventListener("click", function () {
-  fetch("https://jsonplaceholder.typicode.com/posts")
-    .then((response) => response.json())
-    .then((json) => {
-      createTable(json, ["userId", "id", "title", "body"]);
-      console.log("fetch all button pressedd");
-      console.log(json);
+      createTable(Object.keys(json));
+      addRowsToTable([json]);
     });
 });
-
-createBtn.addEventListener("click", function (e) {
-  e.preventDefault();
-  formContainer.classList.remove("form-hidden");
-  document.getElementById("id").value = "";
-  document.getElementById("title").value = "";
-  document.getElementById("body").value = "";
-  console.log(" create button clicked");
-});
-
-saveBtn.addEventListener("click", function (e) {
-  e.preventDefault();
-  formContainer.classList.add("form-hidden");
-  newData();
-  // tableContainer.appendChild(newTable);
-  // console.log("saved");
-});
-
-// Creating new function for  new data
-
-// function addData(data,headers){
-//   const tableEl1 = document.querySelector('.my-class');
-//   const headerRow = document.createElement("tr");
-//   headers.forEach((headerText) => {
-//     const th = document.createElement("th");
-//     th.textContent = headerText;
-//     headerRow.appendChild(th);
-//   });
-//   tablEl.appendChild(headerRow);
-
-//   data.forEach((rowData) => {
-//     const row = document.createElement("tr");
-//     headers.forEach((header) => {
-//       const cell = document.createElement("td");
-//       cell.textContent = rowData[header];
-//       row.appendChild(cell);
-//     });
-//     tablEl.appendChild(row);
-//   });
-
-//   // tableContainer.innerHTML = "";
-//   tableContainer.appendChild(tablEl);
-//   // console.log("create ta
-
-// }
